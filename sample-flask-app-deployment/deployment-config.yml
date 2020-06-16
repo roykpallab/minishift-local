@@ -1,0 +1,31 @@
+kind: "DeploymentConfig"
+apiVersion: "v1"
+metadata:
+  name: "my-webapp-docker"
+spec:
+  template: 
+    metadata:
+      labels:
+        name: "my-webapp-docker"
+    spec:
+      containers:
+        - name: "my-webapp-docker"
+          image: "my-webapp-docker"
+          ports:
+            - containerPort: 8080
+              protocol: "TCP"
+  replicas: 1 
+  selector:
+    name: "my-webapp-docker"
+  triggers:
+    - type: "ConfigChange" 
+    - type: "ImageChange" 
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - "my-webapp-docker"
+        from:
+          kind: "ImageStreamTag"
+          name: "my-webapp-docker:latest"
+  strategy: 
+    type: "Rolling"
